@@ -586,3 +586,17 @@ summary,
   background: var(--terminal-text);
   color: var(--terminal-bg);
 }
+.chhoto-dialog {
+    border-radius: 0.4em;
+    border: 1px dashed var(--terminal-text-dim);
+    border-width: 0.1em;
+    max-width: 40em;
+    background-color: var(--terminal-bg-light);
+    color: var(--terminal-text);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+}
+
+/* Prevent closed dialogs from occupying/rendering space */
+.chhoto-dialog:not([open]) {
+    display: none;
+}
