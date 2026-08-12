@@ -1,22 +1,56 @@
-# SPDX-FileCopyrightText: 2023-2026 Sayantan Santra <sayantan.santra689@gmail.com>
-# SPDX-License-Identifier: MIT
+name: Build Docker image
 
-FROM --platform=$TARGETARCH alpine AS builder-amd64
-COPY ./backend/target/x86_64-unknown-linux-musl/release/chhoto-url /chhoto-url
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-FROM --platform=$TARGETARCH alpine AS builder-arm64
-COPY ./backend/target/aarch64-unknown-linux-musl/release/chhoto-url /chhoto-url
+permissions:
+  contents: read
+  packages: write
 
-FROM --platform=$TARGETARCH alpine AS builder-arm
-COPY ./backend/target/armv7-unknown-linux-musleabihf/release/chhoto-url /chhoto-url
+jobs:
+  docker:
+    runs-on: ubuntu-latest
 
-FROM --platform=$TARGETARCH alpine AS builder-riscv64
-COPY ./backend/target/riscv64gc-unknown-linux-musl/release/chhoto-url /chhoto-url
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-ARG TARGETARCH
-FROM builder-$TARGETARCH
-RUN apk add --no-cache tzdata
-COPY ./frontend /frontend
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-musl
 
-ENTRYPOINT ["/chhoto-url"]
+      - name: Install musl tools
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
 
+      - name: Build Chhoto URL
+        working-directory: backend
+        run: |
+          cargo build --release --locked \
+            --target x86_64-unknown-linux-musl
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./deploy/Containerfile.alpine
+          push: true
+          platforms: linux/amd64
+          build-args: |
+            TARGETARCH=amd64
+          tags: |
+            ghcr.io/net0o/chhoto-url:latest
+            ghcr.io/net0o/chhoto-url:${{ github.sha }}
