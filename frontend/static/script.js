@@ -1014,15 +1014,6 @@ const logOut = async () => {
 };
 
 // This is where loading starts
-document.getElementById("admin-button").onclick = (e) => {
-  e.preventDefault();
-  if (ADMIN) {
-    logOut();
-  } else {
-    showLogin();
-  }
-};
-
 refreshData()
   .then(() => {
     document.getElementById("longUrl").onblur = () => {
@@ -1037,6 +1028,15 @@ refreshData()
       submitForm();
     };
 
+    document.getElementById("admin-button").onclick = (e) => {
+      e.preventDefault();
+      if (ADMIN) {
+        logOut();
+      } else {
+        showLogin();
+      }
+    };
+    
     const editDialog = document.getElementById("edit-dialog");
     editDialog.onclose = () => {
       document.getElementById("container").style.filter = "blur(0px)";
