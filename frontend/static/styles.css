@@ -1,62 +1,115 @@
-/* SPDX-FileCopyrightText: 2023-2026 Sayantan Santra <sayantan.santra689@gmail.com> */
-/* SPDX-License-Identifier: MIT */
+/* Restyled to match the outofspace.sk terminal / CRT aesthetic:
+   VT323 monospace font, dark background, scanlines, dashed borders,
+   glowing off-white text with a dim secondary tone. */
 
-@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
-@font-face {
-  font-family: Montserrat, "Open Sans", Helvetica, Arial, sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 
 :root {
-  color-scheme: light dark;
-  font-family: Montserrat;
-  /* Colors */
-  --text: light-dark(black, #e8e6e3);
-  --bg: light-dark(white, #181a1b);
-  --link: light-dark(blue, #3391ff);
-  --accent: light-dark(#0078e7, #0060b9);
-  --border: light-dark(#cccccc, #3e4446);
-  --shadow: light-dark(#dddddd, #2b2f31);
-  --muted: light-dark(#757575, #636061);
-  --logo: light-dark(#333333, #c8c3bc);
-  --logo-border: light-dark(#e5e5e5, #373c3e);
-  --table: light-dark(#e0e0e0, #2a2d2f);
-  --row-bg: light-dark(#f2f2f2, #080a0b);
-  --row-alt-bg: light-dark(#f2f2f2, #101213);
-  --row-hover: light-dark(rgba(150, 225, 250, 0.3), rgba(35, 225, 250, 0.1));
-  --warning: light-dark(red, #ff1a1a);
-  --warning-button: light-dark(#dd1a1a, #901010);
-  --accent-border: light-dark(black, #867d6e);
-  --tooltip: light-dark(#eeeeee, #484a4b);
-  --tooltip-bg: light-dark(white, #2b2a33);
-  --button-hover: light-dark(#eeeeee, #2b2a33);
+  color-scheme: dark;
+  font-family: "VT323", "Courier New", monospace;
+
+  /* Terminal palette (mirrors outofspace.sk) */
+  --terminal-text: #e8e4d9;
+  --terminal-text-dim: #8a8780;
+  --terminal-text-glow: #fffff0;
+  --terminal-bg: #0a0a0a;
+  --terminal-bg-light: #121212;
+
+  /* Chhoto-URL variable names mapped onto the terminal palette */
+  --text: var(--terminal-text);
+  --bg: var(--terminal-bg);
+  --link: var(--terminal-text);
+  --accent: var(--terminal-bg-light);
+  --border: var(--terminal-text-dim);
+  --shadow: rgba(0, 0, 0, 0.6);
+  --muted: var(--terminal-text-dim);
+  --logo: var(--terminal-text);
+  --logo-border: var(--terminal-text-dim);
+  --table: var(--terminal-bg-light);
+  --row-bg: #0e0e0e;
+  --row-alt-bg: #101213;
+  --row-hover: rgba(232, 228, 217, 0.06);
+  --warning: #ff4d4d;
+  --warning-button: #7a1a1a;
+  --accent-border: var(--terminal-text-dim);
+  --tooltip: var(--terminal-bg-light);
+  --tooltip-bg: #0e0e0e;
+  --button-hover: rgba(232, 228, 217, 0.08);
 }
+
 body {
   color: var(--text);
   background-color: var(--bg);
+  font-family: "VT323", "Courier New", monospace;
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  letter-spacing: 0.02em;
 }
+
+/* CRT scanline + vignette overlay, same technique as outofspace.sk */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 1000;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
 .container {
   max-width: 80em;
   margin: 2em auto auto;
+  position: relative;
+  z-index: 1;
 }
 
 .chhoto-button {
   background-color: var(--accent);
+  color: var(--terminal-text);
+  border: 1px solid var(--terminal-text-dim);
+  font-family: "VT323", monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .chhoto-button:hover,
 .linkButton:hover {
   transform: scale(1.05);
+  background-color: rgba(232, 228, 217, 0.08);
+  box-shadow: 0 0 10px rgba(232, 228, 217, 0.15);
 }
 .pure-form input.chhoto-input {
   width: 65%;
-  border-color: var(--border);
+  background-color: var(--terminal-bg-light);
+  color: var(--terminal-text);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow) 0 0.1em 0.2em inset;
+  font-family: "VT323", monospace;
 }
 .pure-form input.chhoto-input:focus {
-  border-color: var(--border);
+  border-color: var(--terminal-text);
+  outline: none;
+  box-shadow: 0 0 8px rgba(232, 228, 217, 0.2);
 }
 
 #logo,
@@ -71,6 +124,7 @@ span[name="label"] {
   background-color: var(--tooltip-bg);
   border-color: var(--border);
   box-shadow: var(--shadow) 0 0.1em 0.2em inset;
+  color: var(--terminal-text);
 }
 
 ::placeholder {
@@ -79,23 +133,31 @@ span[name="label"] {
 
 #logo {
   color: var(--logo);
-  border-bottom-color: var(--logo-border);
+  border-bottom: 1px dashed var(--logo-border);
   font-size: 2em;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 10px var(--terminal-text-glow), 0 0 20px rgba(232, 228, 217, 0.3);
 }
 #logo img {
   height: 0.8em;
   transition: filter 0.1s ease;
+  filter: grayscale(1) brightness(1.6);
 }
 #logo img:hover {
-  filter: drop-shadow(
-      0 0 10px color-mix(in srgb, var(--accent) 45%, transparent)
-    )
-    drop-shadow(0 0 14px color-mix(in srgb, var(--accent) 25%, transparent));
+  filter: grayscale(1) brightness(1.8)
+    drop-shadow(0 0 10px rgba(232, 228, 217, 0.45))
+    drop-shadow(0 0 14px rgba(232, 228, 217, 0.25));
 }
 
 a {
   color: var(--link);
   text-decoration: none;
+  border-bottom: 1px dashed var(--terminal-text-dim);
+}
+a:hover {
+  color: var(--terminal-text-glow);
+  border-bottom-color: var(--terminal-text);
+  text-shadow: 0 0 8px var(--terminal-text-glow);
 }
 .linkButton {
   display: inline-flex;
@@ -103,7 +165,7 @@ a {
   gap: 0.2em;
   height: 2em;
   padding: 0 0.5em;
-  border: 0.1em solid var(--accent-border);
+  border: 1px solid var(--accent-border);
   border-radius: 0.3em;
   background: transparent;
   color: var(--text);
@@ -111,6 +173,8 @@ a {
   cursor: pointer;
   box-sizing: border-box;
   margin-left: 0.2em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 .linkButton:hover {
   background: var(--button-hover);
@@ -121,8 +185,9 @@ a {
   border-collapse: separate;
   border-spacing: 0;
   border-radius: 0.3em;
-  box-shadow: 0 0 0 0.1em var(--table);
+  box-shadow: 0 0 0 1px var(--table);
   border-color: var(--accent-border);
+  background-color: var(--terminal-bg-light);
 }
 .chhoto-table tr td div {
   max-height: 4.5em;
@@ -150,18 +215,22 @@ a {
 .chhoto-table caption {
   color: var(--text);
   text-align: left;
-  font-size: 1.5em;
+  font-size: 1.6em;
   font-style: normal;
-  font-family: Montserrat;
+  font-family: "VT323", monospace;
+  letter-spacing: 0.08em;
   padding: 0em;
 }
 .chhoto-table thead {
   color: var(--text);
   background-color: var(--table);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 .chhoto-table th,
 .chhoto-table td {
   border-left: none;
+  border-bottom: 1px dotted rgba(138, 135, 128, 0.3);
   max-width: 36em;
 }
 #table-box tr {
@@ -177,7 +246,7 @@ a {
 
 #filter-div {
   min-width: 20em;
-  font-size: 0.7em;
+  font-size: 0.8em;
   float: right;
   text-align: right;
 }
@@ -193,6 +262,11 @@ a {
 }
 #optionsSection[open] summary {
   margin-bottom: 1em;
+}
+#optionsSection summary {
+  cursor: pointer;
+  color: var(--terminal-text-dim);
+  letter-spacing: 0.05em;
 }
 
 th[name="hitsColumn"],
@@ -220,6 +294,7 @@ td[name="actions"] div button,
   display: table-cell;
   vertical-align: middle;
   background-color: transparent;
+  color: var(--terminal-text);
 }
 td[name="actions"] div button.svg-button svg,
 .pure-table caption button.svg-button svg {
@@ -228,6 +303,7 @@ td[name="actions"] div button.svg-button svg,
 
 .svg-button:enabled:hover svg {
   transform: scale(1.2);
+  filter: drop-shadow(0 0 4px rgba(232, 228, 217, 0.4));
 }
 
 .pure-table caption span {
@@ -262,12 +338,17 @@ summary,
 }
 #wrong-pass {
   color: var(--warning);
+  text-shadow: 0 0 6px rgba(255, 77, 77, 0.4);
 }
 
 .chhoto-dialog {
-  border-radius: 1em;
-  border-width: 0.15em;
+  border-radius: 0.4em;
+  border: 1px dashed var(--terminal-text-dim);
+  border-width: 0.1em;
   max-width: 40em;
+  background-color: var(--terminal-bg-light);
+  color: var(--terminal-text);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
 }
 #info-dialog,
 #edit-dialog {
@@ -284,6 +365,7 @@ summary,
   background-color: transparent;
   border-style: none;
   cursor: pointer;
+  color: var(--terminal-text);
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
@@ -293,6 +375,7 @@ summary,
 }
 #edit-cancel-button {
   background-color: var(--warning-button);
+  color: var(--terminal-text);
 }
 #edit-dialog label {
   max-width: 5em;
@@ -310,11 +393,13 @@ summary,
   border-radius: 0.3em;
   margin-top: 0.2em;
   width: fit-content;
+  border: 1px dashed var(--terminal-text-dim);
+  background-color: var(--terminal-bg-light);
 }
 
 #qr-code-dialog {
-  background-color: white;
-  border-color: grey;
+  background-color: #e8e4d9;
+  border-color: var(--terminal-text-dim);
   text-align: right;
 }
 #qr-code-dialog div {
@@ -330,6 +415,7 @@ summary,
   top: 0.3em;
   right: 0.3em;
   cursor: pointer;
+  color: var(--terminal-text);
 }
 .dialog-close-button svg {
   height: 2em;
@@ -340,7 +426,7 @@ summary,
 }
 #qr-code-dialog svg,
 #qr-code-dialog svg {
-  color: black;
+  color: #0a0a0a;
 }
 
 #info-div {
@@ -353,6 +439,7 @@ summary,
 }
 #info-table tr td:first-child {
   font-weight: bold;
+  color: var(--terminal-text-dim);
 }
 #info-table tr td:last-child {
   word-break: break-all;
@@ -372,6 +459,7 @@ summary,
   text-align: center;
   padding: 0.3em 0;
   border-radius: 0.4em;
+  border: 1px dashed var(--terminal-text-dim);
   position: absolute;
   z-index: 1;
   bottom: calc(50% + 1.25em);
@@ -478,6 +566,7 @@ summary,
     min-width: 6em;
     text-align: left;
     align-content: center;
+    color: var(--terminal-text-dim);
   }
   .chhoto-table td div {
     align-content: center;
@@ -491,4 +580,9 @@ summary,
   .tooltip .tooltiptext {
     left: 8em;
   }
+}
+
+::selection {
+  background: var(--terminal-text);
+  color: var(--terminal-bg);
 }
