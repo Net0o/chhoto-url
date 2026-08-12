@@ -1,6 +1,6 @@
 /* Restyled to match the outofspace.sk terminal / CRT aesthetic:
-   VT323 monospace font, dark background, scanlines, dashed borders,
-   glowing off-white text with a dim secondary tone. */
+VT323 monospace font, dark background, scanlines, dashed borders,
+glowing off-white text with a dim secondary tone. */
 
 @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 
@@ -47,7 +47,7 @@ body {
   letter-spacing: 0.02em;
 }
 
-/* CRT scanline + vignette overlay, same technique as outofspace.sk */
+/* CRT scanline + vignette overlay */
 body::before {
   content: "";
   position: fixed;
@@ -59,8 +59,10 @@ body::before {
     transparent 1px,
     transparent 2px
   );
+
+  /* Important: visual-only layer, never receives clicks */
   pointer-events: none;
-  z-index: 1000;
+  z-index: 0;
 }
 
 body::after {
@@ -73,8 +75,10 @@ body::after {
     transparent 60%,
     rgba(0, 0, 0, 0.45) 100%
   );
+
+  /* Important: visual-only layer, never receives clicks */
   pointer-events: none;
-  z-index: 999;
+  z-index: 0;
 }
 
 .container {
@@ -92,12 +96,14 @@ body::after {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
 .chhoto-button:hover,
 .linkButton:hover {
   transform: scale(1.05);
   background-color: rgba(232, 228, 217, 0.08);
   box-shadow: 0 0 10px rgba(232, 228, 217, 0.15);
 }
+
 .pure-form input.chhoto-input {
   width: 65%;
   background-color: var(--terminal-bg-light);
@@ -106,6 +112,7 @@ body::after {
   box-shadow: var(--shadow) 0 0.1em 0.2em inset;
   font-family: "VT323", monospace;
 }
+
 .pure-form input.chhoto-input:focus {
   border-color: var(--terminal-text);
   outline: none;
@@ -117,7 +124,7 @@ body::after {
 .chhoto-table td,
 span[name="label"] {
   user-select: none;
-  -webkit-user-select: none; /* Safari */
+  -webkit-user-select: none;
 }
 
 #expiryDelay {
@@ -136,15 +143,21 @@ span[name="label"] {
   border-bottom: 1px dashed var(--logo-border);
   font-size: 2em;
   letter-spacing: 0.1em;
-  text-shadow: 0 0 10px var(--terminal-text-glow), 0 0 20px rgba(232, 228, 217, 0.3);
+  text-shadow:
+    0 0 10px var(--terminal-text-glow),
+    0 0 20px rgba(232, 228, 217, 0.3);
 }
+
 #logo img {
   height: 0.8em;
   transition: filter 0.1s ease;
   filter: grayscale(1) brightness(1.6);
 }
+
 #logo img:hover {
-  filter: grayscale(1) brightness(1.8)
+  filter:
+    grayscale(1)
+    brightness(1.8)
     drop-shadow(0 0 10px rgba(232, 228, 217, 0.45))
     drop-shadow(0 0 14px rgba(232, 228, 217, 0.25));
 }
@@ -154,11 +167,13 @@ a {
   text-decoration: none;
   border-bottom: 1px dashed var(--terminal-text-dim);
 }
+
 a:hover {
   color: var(--terminal-text-glow);
   border-bottom-color: var(--terminal-text);
   text-shadow: 0 0 8px var(--terminal-text-glow);
 }
+
 .linkButton {
   display: inline-flex;
   align-items: center;
@@ -176,8 +191,36 @@ a:hover {
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
+
 .linkButton:hover {
   background: var(--button-hover);
+}
+
+/*
+ * Keep the login/GitHub controls above the CRT overlay.
+ *
+ * The CRT layers use z-index: 0.
+ * The main page uses z-index: 1.
+ * The controls use z-index: 1001.
+ */
+div[name="links-div"] {
+  position: absolute;
+  right: 0.5%;
+  top: 0.5%;
+  z-index: 1001;
+  pointer-events: auto;
+}
+
+#admin-button {
+  position: relative;
+  z-index: 1002;
+  pointer-events: auto;
+}
+
+#version-number {
+  position: relative;
+  z-index: 1002;
+  pointer-events: auto;
 }
 
 .chhoto-table {
@@ -189,6 +232,7 @@ a:hover {
   border-color: var(--accent-border);
   background-color: var(--terminal-bg-light);
 }
+
 .chhoto-table tr td div {
   max-height: 4.5em;
   line-height: 1.5em;
@@ -199,19 +243,24 @@ a:hover {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .chhoto-table tr td[label="Long URL"] div {
   word-break: break-all;
   color: var(--link);
 }
+
 .chhoto-table tr td[name="numColumn"] div {
   word-break: normal;
 }
+
 .chhoto-table tr td[name="hitsColumn"] div {
   word-break: normal;
 }
+
 .chhoto-table tr:nth-child(even) {
   background-color: var(--row-bg);
 }
+
 .chhoto-table caption {
   color: var(--text);
   text-align: left;
@@ -221,21 +270,25 @@ a:hover {
   letter-spacing: 0.08em;
   padding: 0em;
 }
+
 .chhoto-table thead {
   color: var(--text);
   background-color: var(--table);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
+
 .chhoto-table th,
 .chhoto-table td {
   border-left: none;
   border-bottom: 1px dotted rgba(138, 135, 128, 0.3);
   max-width: 36em;
 }
+
 #table-box tr {
   transition: background-color 0.3s ease;
 }
+
 #table-box tr:hover:has(td) {
   background-color: var(--row-hover);
 }
@@ -250,6 +303,7 @@ a:hover {
   float: right;
   text-align: right;
 }
+
 #filter-div fieldset {
   display: flex;
   justify-content: flex-end;
@@ -260,9 +314,11 @@ a:hover {
 #optionsSection summary {
   margin-top: 1em;
 }
+
 #optionsSection[open] summary {
   margin-bottom: 1em;
 }
+
 #optionsSection summary {
   cursor: pointer;
   color: var(--terminal-text-dim);
@@ -286,6 +342,7 @@ td[name="actions"] div {
   text-align: center;
   width: 12em;
 }
+
 td[name="actions"] div button,
 .pure-table caption button.svg-button {
   aspect-ratio: 1;
@@ -296,6 +353,7 @@ td[name="actions"] div button,
   background-color: transparent;
   color: var(--terminal-text);
 }
+
 td[name="actions"] div button.svg-button svg,
 .pure-table caption button.svg-button svg {
   height: 1.3em;
@@ -309,6 +367,7 @@ td[name="actions"] div button.svg-button svg,
 .pure-table caption span {
   margin-right: 1em;
 }
+
 .pure-table caption span[name="label"] {
   display: inline-block;
   margin: 0.2em 1em 0.4em 0em;
@@ -318,15 +377,10 @@ form input[name="shortUrl"]::placeholder {
   text-transform: none;
 }
 
-div[name="links-div"] {
-  position: absolute;
-  right: 0.5%;
-  top: 0.5%;
-}
-
 details.chhoto-input summary {
   cursor: pointer;
 }
+
 summary,
 .svg-button {
   -webkit-tap-highlight-color: transparent;
@@ -336,6 +390,7 @@ summary,
   width: 100%;
   margin-bottom: 1em;
 }
+
 #wrong-pass {
   color: var(--warning);
   text-shadow: 0 0 6px rgba(255, 77, 77, 0.4);
@@ -350,13 +405,16 @@ summary,
   color: var(--terminal-text);
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
 }
+
 #info-dialog,
 #edit-dialog {
   min-width: 25vw;
 }
+
 #login-dialog div {
   position: relative;
 }
+
 #password-eye-button {
   position: absolute;
   right: 0.1em;
@@ -373,17 +431,21 @@ summary,
 #login-dialog form {
   text-align: center;
 }
+
 #edit-cancel-button {
   background-color: var(--warning-button);
   color: var(--terminal-text);
 }
+
 #edit-dialog label {
   max-width: 5em;
   margin-right: 0em;
 }
+
 #edit-dialog label[for="edit-checkbox"] {
   max-width: 100%;
 }
+
 #edit-buttons {
   margin-top: 0.5em;
 }
@@ -402,12 +464,15 @@ summary,
   border-color: var(--terminal-text-dim);
   text-align: right;
 }
+
 #qr-code-dialog div {
   margin: 0.5em;
 }
+
 #qr-code canvas {
   max-width: min(20em, 80vw);
 }
+
 .dialog-close-button {
   background-color: transparent;
   border-style: none;
@@ -417,13 +482,16 @@ summary,
   cursor: pointer;
   color: var(--terminal-text);
 }
+
 .dialog-close-button svg {
   height: 2em;
 }
+
 #qr-download-button {
   right: 2em;
   text-decoration: none;
 }
+
 #qr-code-dialog svg,
 #qr-code-dialog svg {
   color: #0a0a0a;
@@ -432,15 +500,18 @@ summary,
 #info-div {
   margin: 0.5em 0.5em 0.2em 0.5em;
 }
+
 #info-table,
 #info-table tr td {
   border: none;
   padding-top: 0.1em;
 }
+
 #info-table tr td:first-child {
   font-weight: bold;
   color: var(--terminal-text-dim);
 }
+
 #info-table tr td:last-child {
   word-break: break-all;
 }
@@ -448,9 +519,11 @@ summary,
 .tooltip {
   position: relative;
 }
+
 .tooltip span {
   cursor: pointer;
 }
+
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 8em;
@@ -468,6 +541,7 @@ summary,
   opacity: 0;
   transition: opacity 0.3s;
 }
+
 .tooltip .tooltiptext::after {
   content: "";
   position: absolute;
@@ -478,6 +552,7 @@ summary,
   border-style: solid;
   border-color: var(--tooltip) transparent transparent transparent;
 }
+
 .tooltip span:hover + .tooltiptext {
   visibility: visible;
   opacity: 1;
@@ -488,6 +563,7 @@ summary,
   .container {
     max-width: 98vw;
   }
+
   .pure-form input.chhoto-input {
     width: 98%;
   }
@@ -495,20 +571,25 @@ summary,
   #version-number {
     margin-right: 0.3em;
   }
+
   .chhoto-table {
     border-collapse: collapse;
     border: none;
     box-shadow: none;
   }
+
   .chhoto-table tr:first-child {
     border-top: 0.15em dotted var(--accent-border);
   }
+
   .chhoto-table tr:not(:last-child) {
     border-bottom: 0.15em dotted var(--accent-border);
   }
+
   .chhoto-table tr:nth-child(odd) {
     background-color: var(--row-alt-bg);
   }
+
   .chhoto-table tr:nth-child(even) {
     background-color: inherit;
   }
@@ -527,9 +608,11 @@ summary,
   .chhoto-table tr td[name="shortColumn"] {
     padding-top: 0.5em;
   }
+
   .chhoto-table tr td[name="actions"] {
     padding-bottom: 0.5em;
   }
+
   .chhoto-table tr td[name="actions"] div {
     text-align: left;
     margin-left: -0.5em;
@@ -542,17 +625,20 @@ summary,
   #filter-div {
     width: 100%;
   }
+
   #filter-div fieldset {
     display: flex;
     align-items: center;
     gap: 0.3em;
   }
+
   #filterText,
   #filter-div button {
     box-sizing: border-box;
     min-height: 2.4em;
     margin: 0;
   }
+
   #filter-div button {
     display: inline-flex;
     align-items: center;
@@ -568,6 +654,7 @@ summary,
     align-content: center;
     color: var(--terminal-text-dim);
   }
+
   .chhoto-table td div {
     align-content: center;
   }
