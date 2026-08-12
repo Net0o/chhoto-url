@@ -7,6 +7,7 @@ RUN apk add --no-cache \
 WORKDIR /app
 
 COPY backend/target/x86_64-unknown-linux-musl/release/chhoto-url /app/chhoto-url
+COPY frontend /app/frontend
 
 RUN chmod +x /app/chhoto-url
 
